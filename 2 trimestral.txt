@@ -1,4 +1,5 @@
 /*  el pdf decia que sea con SELECT TOP 5 pero no me deja en mi ordenador, segun el error que me daba esta es la unica opcion que me funciono.
+20 consultas simples
 SELECT  
 titulo AS Titulo,
 motor AS Motor, 
@@ -12,82 +13,72 @@ ORDER BY (precio_base * 1.21) DESC,
 titulo ASC
 limit 5;*/
 
-
-
-/*SELECT titulo AS nombre_final FROM videojuego 
+/*25 union
+SELECT titulo AS nombre_final FROM videojuego 
 WHERE fecha_lanzamiento >= '2020-01-01'
 UNION 
 SELECT nombre FROM estudio
 WHERE fundado_en >= 2000
 ORDER BY nombre_final asc*/
 
-
-
-/*SELECT e.nombre as nombre_estudio,
+/*28 producto cartesiano
+SELECT e.nombre as nombre_estudio,
 e.pais,
 p.nombre as nombre_plataforma  
 FROM estudio e, plataforma p
 ORDER BY e.nombre ASC, e.pais ASC, p.nombre */
 
-
-
-/*SELECT v.titulo AS titulo, v.id_estudio,  e.id_estudio, e.nombre
+/*33 join 
+SELECT v.titulo AS titulo, v.id_estudio,  e.id_estudio, e.nombre
 FROM videojuego AS v
 LEFT JOIN estudio AS e ON v.id_estudio = e.id_estudio
 ORDER BY titulo ASC; */
 
-
-
-/*SELECT d.id_desarrollador, d.nombre, d.id_estudio, SUM(p.horas) as total_horas 
+/*38 group by 
+SELECT d.id_desarrollador, d.nombre, d.id_estudio, SUM(p.horas) as total_horas 
 FROM desarrollador as d
 JOIN participacion as p on d.id_desarrollador = p.id_desarrollador
 GROUP BY d.id_desarrollador, d.nombre 
 HAVING total_horas >=500
 ORDER BY total_horas DESC;*/
 
-
-
-/*SELECT titulo, precio_base 
+/*39  subconsulta escalar
+SELECT titulo, precio_base 
 FROM videojuego 
 WHERE precio_base >( 
 SELECT AVG (precio_base )
 FROM videojuego)
 ORDER BY precio_base DESC*/
 
-
-
-/*SELECT titulo, precio_base 
+/*43 subconsulta con any/all
+SELECT titulo, precio_base 
 FROM videojuego 
 WHERE precio_base > ALL (
 SELECT precio_base FROM videojuego WHERE pegi = 7)
 ORDER BY precio_base DESC*/
 
-
-
-/*SELECT titulo
+/*45 subconsulta con in
+SELECT titulo
 FROM videojuego 
 WHERE id_estudio IN (
 SELECT id_estudio FROM estudio WHERE pais = 'España')
 ORDER BY titulo  ASC*/
 
-
-
-/*SELECT titulo
+/*49 subconsulta cin exist
+SELECT titulo
 FROM videojuego as v
 WHERE EXISTS ( SELECT id_dlc FROM dlc as d WHERE d.id_videojuego = v.id_videojuego)
 ORDER BY titulo ASC */
 
-
-
-/*CREATE VIEW precio_con_iva as 
+/*55 vistas 
+CREATE VIEW precio_con_iva as 
 SELECT  precio_base, precio_base * 1.21 as precio_con_iva
 FROM videojuego 
 WHERE pegi IS NOT NULL; */
 
 
-
-
-/*CREATE INDEX idx_titulo		prueba con un indice random
+/*56 indices
+CREATE INDEX idx_titulo		prueba con un indice random
 ON videojuego (titulo);
 
 SELECT
@@ -96,24 +87,3 @@ FROM
     videojuego
 WHERE
     titulo = 'minecraft';*/
-
-
-vista
-/* ------------------------------------------------------------
-   EJERCICIO 55 – VISTAS
-   Modificar la vista para añadir una columna precio_con_iva
-   y filtrar videojuegos con PEGI no nulo.
------------------------------------------------------------- */
-
-CREATE OR REPLACE VIEW vw_videojuegos_estudio AS
-SELECT
-  v.titulo AS videojuego,                   -- Título del videojuego
-  e.nombre AS estudio,                      -- Nombre del estudio
-  e.pais AS pais_estudio,                   -- País del estudio
-  v.pegi,                                   -- Clasificación PEGI
-  v.precio_base,                            -- Precio base
-  (v.precio_base * 1.21) AS precio_con_iva  -- Precio con IVA
-FROM videojuego v
-INNER JOIN estudio e                        -- Relación videojuego-estudio
-  ON v.id_estudio = e.id_estudio
-WHERE v.pegi IS NOT NULL;                   -- Filtra videojuegos con PEGI definido
