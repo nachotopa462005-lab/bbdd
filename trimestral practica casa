@@ -1,0 +1,66 @@
+/*SELECT id_videojuego as identificador, titulo as titulo_videojuego
+FROM videojuego 
+ORDER BY titulo_videojuego ASC*/
+
+/*SELECT * FROM estudio
+WHERE pais = 'España'
+ORDER BY ciudad, nombre;*/
+
+/*SELECT nombre, apellido 
+FROM desarrollador as d 
+where activo = '1'
+ORDER BY apellido ASC*/
+
+/* simple
+SELECT titulo, fecha_lanzamiento
+FROM videojuego 
+ORDER BY fecha_lanzamiento DESC
+limit 5;*/
+
+/*  simple
+SELECT titulo as titulo, motor as motor,(precio_base*1.21) as precio_con_iva, pegi as pegi_limpio
+from videojuego 
+where fecha_lanzamiento is not null and motor is not null and titulo like '%a%'
+order by precio_con_iva desc,titulo asc*/
+
+/* union
+SELECT titulo AS nombre_final FROM videojuego 
+WHERE fecha_lanzamiento >= '2020-01-01'
+UNION 
+SELECT nombre FROM estudio
+WHERE fundado_en >= 2000
+ORDER BY nombre_final asc*/
+
+/* join
+SELECT 
+    v.titulo, 
+    p.nombre AS nombre_plataforma
+FROM 
+    videojuego v
+JOIN 
+    plataforma p ON v.id_plataforma = p.id_plataforma
+ORDER BY 
+    v.titulo ASC, 
+    p.nombre ASC;*/
+    
+
+
+vista
+/* ------------------------------------------------------------
+   EJERCICIO 55 – VISTAS
+   Modificar la vista para añadir una columna precio_con_iva
+   y filtrar videojuegos con PEGI no nulo.
+------------------------------------------------------------ */
+
+CREATE OR REPLACE VIEW vw_videojuegos_estudio AS
+SELECT
+  v.titulo AS videojuego,                   -- Título del videojuego
+  e.nombre AS estudio,                      -- Nombre del estudio
+  e.pais AS pais_estudio,                   -- País del estudio
+  v.pegi,                                   -- Clasificación PEGI
+  v.precio_base,                            -- Precio base
+  (v.precio_base * 1.21) AS precio_con_iva  -- Precio con IVA
+FROM videojuego v
+INNER JOIN estudio e                        -- Relación videojuego-estudio
+  ON v.id_estudio = e.id_estudio
+WHERE v.pegi IS NOT NULL;                   -- Filtra videojuegos con PEGI definido
